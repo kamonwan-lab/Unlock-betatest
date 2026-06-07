@@ -2,7 +2,7 @@ const gameDatabase = {
     "ep2": {
         name: "Episode 2: 5th Avenue",
         prefix: "ep2",
-        coverImg: "unlock_ep2.jpg", // เพิ่มชื่อไฟล์รูปหน้าปกตรงนี้
+        coverImg: "unlock_ep2.png", // เพิ่มชื่อไฟล์รูปหน้าปกตรงนี้
         startCard: "ep2_05",
     }
 };
