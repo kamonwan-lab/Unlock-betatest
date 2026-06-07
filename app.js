@@ -128,13 +128,53 @@ function createCardElement(cardData) {
     inner.appendChild(back);
     card.appendChild(inner);
 
-    // การโต้ตอบ: พลิกการ์ด & อัปเดต Focus Area
-    card.onclick = () => { updateFocusArea(frontSrc, backSrc, card.classList.contains('flipped')); };
+    // การโต้ตอบ: พลิกการ์ด & อัปเดต Focus Area & ระบบคลิกเลือกการ์ด (Deck)
+    card.onclick = () => { 
+        // 1. ถ้าการ์ดอยู่ใน Deck ให้ทำการคลิกเพื่อ เลือก/ยกเลิกเลือก (เพิ่มกรอบสีเหลือง)
+        if (card.closest('#deck-area')) {
+            card.classList.toggle('selected-card');
+        }
+        
+        // 2. อัปเดต Focus Area ไปด้วยตามปกติ (โค้ดเดิมของคุณยังอยู่ตรงนี้ครับ)
+        updateFocusArea(frontSrc, backSrc, card.classList.contains('flipped')); 
+    };
     
+    // ส่วน Double Click เพื่อพลิกการ์ด ก็ยังคงใช้โค้ดเดิมของคุณได้เลยครับ
     card.ondblclick = () => { 
         card.classList.toggle('flipped'); 
         updateFocusArea(frontSrc, backSrc, card.classList.contains('flipped'));
     };
+
+    // --- Deck Selection Functions ---
+
+// ฟังก์ชันส่งการ์ดที่เลือกไปยัง Play Area
+function sendSelectedToPlayArea() {
+    const playArea = document.getElementById('play-area');
+    // หาการ์ดทั้งหมดใน deck-area ที่มีคลาส selected-card
+    const selectedCards = document.querySelectorAll('#deck-area .selected-card');
+    
+    if (selectedCards.length === 0) {
+        alert("กรุณาคลิกเลือกการ์ดอย่างน้อย 1 ใบก่อนครับ");
+        return;
+    }
+
+    selectedCards.forEach(card => {
+        card.classList.remove('selected-card'); // เอาเอฟเฟกต์เรืองแสงออกก่อนย้าย
+        playArea.appendChild(card); // ย้ายการ์ดไป Play Area
+        
+        // ถ้าต้องการให้การ์ดพลิกโชว์หน้าเนื้อหา (Play side) ทันทีที่ลงบอร์ด เปิดคอมเมนต์บรรทัดล่างได้เลยครับ
+        // card.classList.add('flipped'); 
+    });
+
+    // ปิดหน้าต่าง Popup หลังจากส่งการ์ดเสร็จ (ถ้าอยากให้หน้าต่างเปิดค้างไว้ ให้ลบบรรทัดนี้ออกครับ)
+    closeModal('deck-modal');
+}
+
+// ฟังก์ชันยกเลิกการเลือกทั้งหมด
+function deselectAllDeckCards() {
+    const selectedCards = document.querySelectorAll('#deck-area .selected-card');
+    selectedCards.forEach(card => card.classList.remove('selected-card'));
+}
 
     // ลากการ์ด
     card.addEventListener('dragstart', (e) => {
