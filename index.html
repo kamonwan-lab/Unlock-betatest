@@ -62,6 +62,11 @@
                 <h2>Waiting Cards in Deck</h2>
                 <button class="close-btn" onclick="closeModal('deck-modal')">✖</button>
             </div>
+            
+            <div class="deck-controls">
+                <button class="action-btn" onclick="sendSelectedToPlayArea()">➡️ ส่งการ์ดที่เลือกไป Play Area</button>
+                <button class="action-btn cancel-btn" onclick="deselectAllDeckCards()">❌ ยกเลิกการเลือกทั้งหมด</button>
+            </div>
             <div id="deck-area" class="drop-zone modal-grid"></div>
         </div>
     </div>
