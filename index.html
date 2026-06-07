@@ -14,6 +14,11 @@
         <div id="episode-list"></div>
     </div>
 
+    <div id="loading-screen" class="hidden">
+        <h2>กำลังค้นหาการ์ดในโฟลเดอร์ images...</h2>
+        <p>Please wait a moment...</p>
+    </div>
+
     <div id="game-screen" class="hidden">
         <header>
             <button onclick="goHome()">🏠 Home</button>
@@ -22,7 +27,7 @@
                 <button onclick="searchCard()">Find</button>
             </div>
             <div id="trash-area" class="drop-zone">
-                🗑️ Trash (Drag Here)
+                🗑️ ทิ้งการ์ด (ลากมาปล่อยที่นี่)
             </div>
         </header>
 
@@ -35,8 +40,9 @@
         </main>
         
         <aside id="discard-log">
-            <h3>Discarded</h3>
+            <h3>Discarded (กองการ์ดทิ้ง)</h3>
             <ul id="discard-list"></ul>
+            <p style="font-size: 0.8em; color: #bdc3c7;">* กดที่ไอคอน ↩️ เพื่อเรียกการ์ดคืน</p>
         </aside>
     </div>
 
