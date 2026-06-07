@@ -21,29 +21,59 @@
 
     <div id="game-screen" class="hidden">
         <header>
-            <button onclick="goHome()">🏠 Home</button>
-            <div class="search-container">
-                <input type="text" id="card-search" placeholder="Search card No... (e.g. 08)">
-                <button onclick="searchCard()">Find</button>
+            <div class="header-left">
+                <button class="icon-btn" onclick="goHome()">🏠 Home</button>
+                <div class="search-container">
+                    <input type="text" id="card-search" placeholder="Search card...">
+                    <button onclick="searchCard()">🔍</button>
+                </div>
             </div>
-            <div id="trash-area" class="drop-zone">
-                🗑️ ทิ้งการ์ด (ลากมาปล่อยที่นี่)
-            </div>
+            <div class="header-title">Unlock! Board</div>
         </header>
 
-        <main>
-            <div class="section-title">Play Area</div>
-            <div id="play-area" class="drop-zone"></div>
+        <main id="game-container">
+            <section id="focus-panel">
+                <div class="panel-title">Reading Focus</div>
+                <div id="focus-content">
+                    <img id="focus-img" src="" alt="คลิกที่การ์ดเพื่อดูภาพขยาย" style="display:none;">
+                    <p id="focus-placeholder">Select a card to view</p>
+                </div>
+            </section>
 
-            <div class="section-title">Waiting Area (Deck)</div>
-            <div id="waiting-area" class="drop-zone"></div>
+            <section id="play-panel">
+                <div class="panel-title">Selected Cards Area</div>
+                <div id="play-area" class="drop-zone"></div>
+            </section>
+
+            <section id="right-panel">
+                <div id="discard-zone" class="drop-zone action-zone" onclick="openModal('discard-modal')">
+                    🗑️<br>Discard Zone<br><small>[ Drag Here or Click ]</small>
+                </div>
+                <div id="deck-zone" class="action-zone" onclick="openModal('deck-modal')">
+                    🎴<br>Deck Stack<br><small>[ Click to Open ]</small>
+                </div>
+            </section>
         </main>
-        
-        <aside id="discard-log">
-            <h3>Discarded (กองการ์ดทิ้ง)</h3>
+    </div>
+
+    <div id="deck-modal" class="modal hidden">
+        <div class="modal-content deck-content">
+            <div class="modal-header">
+                <h2>Waiting Cards in Deck</h2>
+                <button class="close-btn" onclick="closeModal('deck-modal')">✖</button>
+            </div>
+            <div id="deck-area" class="drop-zone modal-grid"></div>
+        </div>
+    </div>
+
+    <div id="discard-modal" class="modal hidden">
+        <div class="modal-content discard-content">
+            <div class="modal-header">
+                <h2>Discarded Cards</h2>
+                <button class="close-btn" onclick="closeModal('discard-modal')">✖</button>
+            </div>
             <ul id="discard-list"></ul>
-            <p style="font-size: 0.8em; color: #bdc3c7;">* กดที่ไอคอน ↩️ เพื่อเรียกการ์ดคืน</p>
-        </aside>
+        </div>
     </div>
 
     <script src="app.js"></script>
