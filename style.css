@@ -16,8 +16,8 @@ body {
 
 .hidden { display: none !important; }
 
-/* Welcome Screen */
-#welcome-screen {
+/* Screens */
+#welcome-screen, #loading-screen {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -37,15 +37,13 @@ body {
     transition: transform 0.2s;
 }
 
-.ep-btn:hover {
-    transform: scale(1.05);
-}
+.ep-btn:hover { transform: scale(1.05); }
 
 /* Game Screen Layout */
 #game-screen {
     display: grid;
     grid-template-rows: 60px 1fr;
-    grid-template-columns: 1fr 200px;
+    grid-template-columns: 1fr 250px;
     height: 100vh;
 }
 
@@ -86,13 +84,35 @@ main {
 
 #play-area { background-color: rgba(46, 204, 113, 0.1); }
 #waiting-area { background-color: rgba(52, 152, 219, 0.1); }
-#trash-area { border-color: #e74c3c; width: 150px; text-align: center; }
+#trash-area { border-color: #e74c3c; width: 200px; text-align: center; background-color: rgba(231, 76, 60, 0.2); cursor: pointer; }
 
 #discard-log {
     grid-column: 2 / 3;
     background: var(--panel-bg);
     padding: 10px;
     overflow-y: auto;
+}
+
+#discard-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#discard-list li {
+    background: #2c3e50;
+    margin-bottom: 5px;
+    padding: 8px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.restore-btn {
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #2ecc71;
+    font-size: 1.2rem;
 }
 
 /* Card Styles & Flipping Mechanics */
@@ -104,9 +124,8 @@ main {
     transition: box-shadow 0.3s ease;
 }
 
-.card:active {
-    cursor: grabbing;
-}
+.card:active { cursor: grabbing; }
+.card.dragging { opacity: 0.5; }
 
 .card-inner {
     position: relative;
@@ -116,9 +135,7 @@ main {
     transform-style: preserve-3d;
 }
 
-.card.flipped .card-inner {
-    transform: rotateY(180deg);
-}
+.card.flipped .card-inner { transform: rotateY(180deg); }
 
 .card-front, .card-back {
     position: absolute;
@@ -137,5 +154,5 @@ main {
     background: white;
 }
 
-/* Back side is showing first initially, so we rotate the front */
+/* Back side is showing first initially */
 .card-front { transform: rotateY(180deg); }
