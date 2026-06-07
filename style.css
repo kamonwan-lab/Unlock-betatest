@@ -1,198 +1,233 @@
+/* Color Palette and Variables */
 :root {
-    --bg-main: #14212b;
-    --bg-panel: #1e3040;
-    --bg-card-area: #22425a;
-    --accent: #e74c3c;
-    --text: #ecf0f1;
+    --bg-color: #0b1c28; /* Dark teal/blue */
+    --panel-bg: #1e2a36; /* Slightly lighter teal */
+    --accent-red: #8f1b1a; /* Dark red for trash */
+    --highlight-green: #2ecc71;
+    --text-color: #ecf0f1;
+    --border-color: #34495e;
 }
 
 body {
-    margin: 0; font-family: Arial, sans-serif;
-    background-color: var(--bg-main); color: var(--text);
-    height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevent body scroll */
 }
 
 .hidden { display: none !important; }
 
-/* Screens */
-#welcome-screen, #loading-screen {
-    display: flex; flex-direction: column; align-items: center;
-    justify-content: center; height: 100vh;
-}
-.ep-btn {
-    padding: 15px 30px; font-size: 1.2rem; margin: 10px; cursor: pointer;
-    background-color: #2ecc71; color: white; border: none; border-radius: 5px;
-}
-
-/* Header */
-header {
-    height: 50px; background: #0b141a; display: flex;
-    justify-content: space-between; align-items: center; padding: 0 20px;
-}
-.header-left { display: flex; gap: 15px; }
-.icon-btn, .search-container button {
-    background: #34495e; color: white; border: none; padding: 8px 15px;
-    cursor: pointer; border-radius: 4px;
-}
-.search-container input {
-    padding: 8px; border: none; border-radius: 4px; outline: none;
-}
-
-/* Main Layout (3 Columns) */
-#game-container {
-    display: flex; flex: 1; padding: 10px; gap: 10px; overflow: hidden;
-}
-.panel-title {
-    font-size: 0.9em; color: #bdc3c7; margin-bottom: 8px; border-bottom: 1px solid #34495e; padding-bottom: 4px;
-}
-
-/* Left: Focus Area */
-#focus-panel {
-    width: 30%; background: var(--bg-panel); border-radius: 6px;
-    padding: 10px; display: flex; flex-direction: column;
-}
-#focus-content {
-    flex: 1; display: flex; justify-content: center; align-items: center;
-    background: #0b141a; border-radius: 4px; overflow: hidden; padding: 10px;
-}
-#focus-img { max-width: 100%; max-height: 100%; object-fit: contain; }
-
-/* Center: Play Area */
-#play-panel {
-    flex: 1; background: var(--bg-panel); border-radius: 6px;
-    padding: 10px; display: flex; flex-direction: column;
-}
-#play-area {
-    flex: 1; overflow-y: auto; display: flex; flex-wrap: wrap; gap: 15px;
-    align-content: flex-start; padding: 10px; border: 1px dashed transparent;
-}
-
-/* Right: Action Zones */
-#right-panel {
-    width: 20%; display: flex; flex-direction: column; gap: 10px;
-}
-.action-zone {
-    flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
-    border-radius: 6px; cursor: pointer; text-align: center; transition: 0.2s; font-size: 1.2rem;
-}
-#discard-zone {
-    border: 2px dashed var(--accent); background: rgba(231, 76, 60, 0.1); color: var(--accent);
-}
-#discard-zone:hover { background: rgba(231, 76, 60, 0.2); }
-#deck-zone {
-    border: 2px solid #f1c40f; background: rgba(241, 196, 15, 0.1); color: #f1c40f;
-}
-#deck-zone:hover { background: rgba(241, 196, 15, 0.2); }
-
-/* Modals (Pop-ups) */
-.modal {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1000;
-}
-.modal-content {
-    background: var(--bg-panel); border-radius: 8px; padding: 20px;
-    display: flex; flex-direction: column;
-}
-.deck-content { width: 80%; height: 80%; }
-.discard-content { width: 400px; max-height: 80%; }
-
-.modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #34495e; padding-bottom: 10px; margin-bottom: 15px; }
-.close-btn { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
-
-.modal-grid { flex: 1; overflow-y: auto; display: flex; flex-wrap: wrap; gap: 15px; align-content: flex-start; }
-
-#discard-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex: 1; }
-#discard-list li { background: #0b141a; margin-bottom: 8px; padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
-.restore-btn { background: #2ecc71; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
-
-/* Cards */
-.card { width: 140px; height: 200px; perspective: 1000px; cursor: grab; transition: 0.2s; }
-.card:active { cursor: grabbing; }
-.card.dragging { opacity: 0.5; transform: scale(0.95); }
-.card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.5s; transform-style: preserve-3d; }
-.card.flipped .card-inner { transform: rotateY(180deg); }
-.card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); }
-.card-front img, .card-back img { width: 100%; height: 100%; object-fit: contain; background: white; border-radius: 6px; }
-.card-front { transform: rotateY(180deg); }
-
-/* Deck Controls Buttons */
-.deck-controls {
+/* Welcome Screen */
+#welcome-screen {
     display: flex;
-    gap: 15px;
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px dashed #34495e;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
-.action-btn {
-    background: #3498db;
+.ep-btn {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    background-color: #2c3e50;
     color: white;
     border: none;
-    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+.ep-btn:hover { background-color: #34495e; }
+
+/* Main Game Layout (จัดเลย์เอาต์หน้าจอเล่นเกมหลัก) */
+#layout-container {
+    display: flex;
+    height: calc(100vh - 20px); /* Fill screen minus padding */
+    padding: 10px;
+    gap: 10px;
+}
+
+/* Panel Titles */
+.panel-title {
+    text-transform: uppercase;
+    font-weight: bold;
+    color: var(--highlight-green);
+    border-bottom: 2px solid #555;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+/* LEFT PANEL (ส่วนซ้าย: Focus, Trash, Search) */
+#focus-panel {
+    width: 350px;
+    background: var(--panel-bg);
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.panel-header {
+    display: flex;
+    gap: 10px;
+}
+.icon-btn, .search-container button {
+    background: #34495e;
+    color: white;
+    border: none;
+    padding: 8px 12px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 1rem;
-    transition: 0.2s;
+}
+.search-container input {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
 }
 
-.action-btn:hover { background: #2980b9; }
-
-.cancel-btn { background: #95a5a6; }
-.cancel-btn:hover { background: #7f8c8d; }
-
-/* Selected Card Highlight */
-.card.selected-card {
-    box-shadow: 0 0 15px 5px #f1c40f; /* แสงสีเหลืองรอบการ์ด */
-    transform: translateY(-10px); /* ดันการ์ดลอยขึ้นมานิดนึง */
-    border: 2px solid #f1c40f;
-}
-
-/* 1. ปรับแก้ให้ Popup (Modal) ไม่ล้นขอบจอเด็ดขาด */
-.discard-content { 
-    width: 90%; /* ใช้เปอร์เซ็นต์แทน Fix pixel */
-    max-width: 400px; 
-    max-height: 80%; 
-}
-.deck-content { 
-    width: 90%; 
-    max-width: 800px; 
-    height: 80%; 
-}
-
-/* 2. ทำให้การ์ดที่เรียงกันในบอร์ด ถ้าพื้นที่แคบให้ปัดตกบรรทัดใหม่เสมอ */
-.drop-zone, .modal-grid {
+/* --- THE CRITICAL FIX: แก้ปัญหาภาพล้นหน้าจอ --- */
+.panel-section {
+    flex: 1; /* Stretch vertically */
     display: flex;
-    flex-wrap: wrap; /* สำคัญมาก: ทำให้การ์ดไม่ดันกันจนทะลุขอบ */
-    justify-content: flex-start;
+    flex-direction: column;
+    min-height: 0; /* Important for inner flex containers */
 }
 
-/* 3. ทำให้ภาพใน Focus Area หดเล็กลงตามกรอบเสมอ ไม่ทะลุออกไป */
-#focus-img { 
-    max-width: 100%; 
-    max-height: 100%; 
-    object-fit: contain; /* บังคับภาพให้อยู่ในสัดส่วน โดยไม่ล้นกรอบ */
+/* Make Focus Viewer scrollable if needed */
+.focus-viewer {
+    background-color: black;
+    border: 3px solid white;
+    border-radius: 5px;
+    overflow-y: auto; /* เปิด Scroll แนวตั้งถ้าภาพสูงเกินขอบ */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    flex: 1; /* Stretch to fill panel space */
 }
 
-/* 4. การแสดงผลบนหน้าจอเล็ก (Responsive สำหรับหน้าจอกว้างไม่เกิน 768px เช่น iPad, มือถือ) */
+/* บังคับภาพไม่ให้สูงเกินกรอบ และปรับสัดส่วนอัตโนมัติ */
+#focus-img {
+    max-width: 100%;
+    max-height: 100%; /* ภาพจะไม่สูงไปกว่า .focus-viewer */
+    object-fit: contain; /* ปรับภาพให้อยู่ในสัดส่วน โดยไม่ล้นกรอบ */
+}
+
+/* TRASH AREA (Dark red) */
+.trash-zone {
+    border: 3px dashed var(--accent-red);
+    background-color: rgba(143, 27, 26, 0.2);
+    border-radius: 5px;
+    height: 100px;
+    color: var(--accent-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* RIGHT PANEL (Game Area Grid) */
+#game-area {
+    flex: 1;
+    background: var(--panel-bg);
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.header-main-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Grid for cards */
+#game-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    grid-gap: 10px;
+    overflow-y: auto; /* Scroll if many cards are played */
+    padding: 10px 0;
+}
+
+/* Dropzone styling for dragging into the grid */
+.drop-zone {
+    border-color: #555;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Card Styles */
+.card {
+    width: 120px;
+    height: 180px;
+    cursor: grab;
+    perspective: 1000px;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.card.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    background: white; /* In case of transparent PNG */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+/* Back side is rotated initialy */
+.card-front { transform: rotateY(180deg); }
+
+/* --- Mobile Responsiveness ( stacked layout on small screens ) --- */
 @media (max-width: 768px) {
-    /* ปลดล็อกให้จอหลักเลื่อนขึ้นลงได้ */
-    #game-container {
-        flex-direction: column; /* เปลี่ยนจากเรียงซ้ายขวา เป็นเรียงบนลงล่าง */
-        overflow-y: auto; /* เปิดให้เลื่อนขึ้นลงได้ถ้าจอเล็กเกินไป */
+    #layout-container {
+        flex-direction: column;
+        overflow-y: auto; /* Scroll the main container on mobile */
     }
     
-    /* ให้แต่ละ Panel กางเต็ม 100% ของจอมือถือ */
-    #focus-panel, #play-panel, #right-panel {
-        width: 100%; 
-        box-sizing: border-box;
+    #focus-panel {
+        width: 100%;
+        height: auto;
+        flex: none;
     }
-
-    #focus-panel { min-height: 250px; } /* ให้พื้นที่โชว์รูปใหญ่พอสมควร */
-    #play-panel { min-height: 300px; flex: none; } /* พื้นที่วางการ์ด */
     
-    /* ปรับปุ่มเมนูขวา (Deck/Discard) ให้เรียงแนวนอนแทนในมือถือ */
-    #right-panel {
-        flex-direction: row; 
-        min-height: 100px;
+    .focus-viewer {
+        height: 250px; /* Limit height of focus area on mobile */
+    }
+    
+    #game-area {
+        height: auto;
+        flex: none;
+    }
+    
+    #game-grid {
+        height: 400px; /* Allow grid to scroll vertically */
     }
 }
