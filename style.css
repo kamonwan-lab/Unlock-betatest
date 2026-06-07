@@ -114,3 +114,35 @@ header {
 .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); }
 .card-front img, .card-back img { width: 100%; height: 100%; object-fit: contain; background: white; border-radius: 6px; }
 .card-front { transform: rotateY(180deg); }
+
+/* Deck Controls Buttons */
+.deck-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #34495e;
+}
+
+.action-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.2s;
+}
+
+.action-btn:hover { background: #2980b9; }
+
+.cancel-btn { background: #95a5a6; }
+.cancel-btn:hover { background: #7f8c8d; }
+
+/* Selected Card Highlight */
+.card.selected-card {
+    box-shadow: 0 0 15px 5px #f1c40f; /* แสงสีเหลืองรอบการ์ด */
+    transform: translateY(-10px); /* ดันการ์ดลอยขึ้นมานิดนึง */
+    border: 2px solid #f1c40f;
+}
