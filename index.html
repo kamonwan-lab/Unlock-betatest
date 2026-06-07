@@ -3,81 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unlock! Web Game</title>
+    <title>Unlock! ep2 - Game Board</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="welcome-screen">
-        <h1>Unlock! Web Game</h1>
-        <p>Select an episode to begin:</p>
-        <div id="episode-list"></div>
-    </div>
-
-    <div id="loading-screen" class="hidden">
-        <h2>กำลังค้นหาการ์ดในโฟลเดอร์ images...</h2>
-        <p>Please wait a moment...</p>
+        <h1>Unlock! Board Game</h1>
+        <p>Select your episode to begin:</p>
+        <div id="episode-list">
+            </div>
     </div>
 
     <div id="game-screen" class="hidden">
-        <header>
-            <div class="header-left">
-                <button class="icon-btn" onclick="goHome()">🏠 Home</button>
-                <div class="search-container">
-                    <input type="text" id="card-search" placeholder="Search card...">
-                    <button onclick="searchCard()">🔍</button>
-                </div>
-            </div>
-            <div class="header-title">Unlock! Board</div>
-        </header>
+        <div id="layout-container">
+            <aside id="focus-panel">
+                <header class="panel-header">
+                    <button class="icon-btn" onclick="goHome()">🏠 Home</button>
+                    <div class="search-container">
+                        <input type="text" id="card-search" placeholder="Search card No...">
+                        <button onclick="searchCard()">Find</button>
+                    </div>
+                </header>
+                
+                <section class="panel-section">
+                    <div class="panel-title">FOCUS AREA</div>
+                    <div id="focus-area" class="focus-viewer">
+                        <img id="focus-img" src="" alt="FOCUSED" style="display:none;">
+                        <p id="focus-placeholder">Select a card from played or waiting area</p>
+                    </div>
+                </section>
 
-        <main id="game-container">
-            <section id="focus-panel">
-                <div class="panel-title">Reading Focus</div>
-                <div id="focus-content">
-                    <img id="focus-img" src="" alt="คลิกที่การ์ดเพื่อดูภาพขยาย" style="display:none;">
-                    <p id="focus-placeholder">Select a card to view</p>
-                </div>
-            </section>
+                <section class="panel-section">
+                    <div class="panel-title">Used Cards</div>
+                    <div id="trash-area" class="trash-zone drop-zone">
+                        🗑️ USED [ Drag Here ]
+                    </div>
+                </section>
+            </aside>
 
-            <section id="play-panel">
-                <div class="panel-title">Selected Cards Area</div>
-                <div id="play-area" class="drop-zone"></div>
-            </section>
+            <main id="game-area">
+                <header class="panel-header">
+                    <div class="header-main-title">GAME AREA</div>
+                    <small>Wait... [Click to get and see back]</small>
+                </header>
 
-            <section id="right-panel">
-                <div id="discard-zone" class="drop-zone action-zone" onclick="openModal('discard-modal')">
-                    🗑️<br>Discard Zone<br><small>[ Drag Here or Click ]</small>
-                </div>
-                <div id="deck-zone" class="action-zone" onclick="openModal('deck-modal')">
-                    🎴<br>Deck Stack<br><small>[ Click to Open ]</small>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <div id="deck-modal" class="modal hidden">
-        <div class="modal-content deck-content">
-            <div class="modal-header">
-                <h2>Waiting Cards in Deck</h2>
-                <button class="close-btn" onclick="closeModal('deck-modal')">✖</button>
-            </div>
-            
-            <div class="deck-controls">
-                <button class="action-btn" onclick="sendSelectedToPlayArea()">➡️ ส่งการ์ดที่เลือกไป Play Area</button>
-                <button class="action-btn cancel-btn" onclick="deselectAllDeckCards()">❌ ยกเลิกการเลือกทั้งหมด</button>
-            </div>
-            <div id="deck-area" class="drop-zone modal-grid"></div>
-        </div>
-    </div>
-
-    <div id="discard-modal" class="modal hidden">
-        <div class="modal-content discard-content">
-            <div class="modal-header">
-                <h2>Discarded Cards</h2>
-                <button class="close-btn" onclick="closeModal('discard-modal')">✖</button>
-            </div>
-            <ul id="discard-list"></ul>
+                <section id="game-grid">
+                    </section>
+            </main>
         </div>
     </div>
 
