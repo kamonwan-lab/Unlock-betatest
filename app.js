@@ -2,6 +2,7 @@ const gameDatabase = {
     "ep2": {
         name: "Episode 2: 5th Avenue",
         prefix: "ep2",
+        coverImg: "unlock_ep2.jpg", // เพิ่มชื่อไฟล์รูปหน้าปกตรงนี้
         startCard: "ep2_05",
     }
 };
@@ -14,11 +15,22 @@ window.onload = () => {
     for (const [epId, epData] of Object.entries(gameDatabase)) {
         const btn = document.createElement('button');
         btn.className = 'ep-btn';
-        btn.innerText = `Start ${epData.name}`;
+        
+        // ปรับปุ่มให้โชว์รูปหน้าปกด้วย
+        btn.innerHTML = `
+            <img src="images/${epData.coverImg}" alt="${epData.name}" style="width: 150px; display: block; margin: 0 auto 10px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+            Start ${epData.name}
+        `;
+        
+        // ถ้าอยากให้พื้นหลังปุ่มโปร่งใสหรือเปลี่ยนสี ปรับเพิ่มตรงนี้ได้
+        btn.style.backgroundColor = "#2c3e50"; 
+        
         btn.onclick = () => loadEpisode(epId);
         epList.appendChild(btn);
     }
 };
+
+// ... (โค้ดส่วน async function scanForCards(prefix) และอื่นๆ ด้านล่าง ปล่อยไว้เหมือนเดิมเลยครับ) ...
 
 async function scanForCards(prefix) {
     const validCards = [];
