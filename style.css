@@ -1,0 +1,141 @@
+:root {
+    --bg-color: #2c3e50;
+    --panel-bg: #34495e;
+    --text-color: #ecf0f1;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.hidden { display: none !important; }
+
+/* Welcome Screen */
+#welcome-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.ep-btn {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    margin: 10px;
+    cursor: pointer;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: transform 0.2s;
+}
+
+.ep-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Game Screen Layout */
+#game-screen {
+    display: grid;
+    grid-template-rows: 60px 1fr;
+    grid-template-columns: 1fr 200px;
+    height: 100vh;
+}
+
+header {
+    grid-column: 1 / 3;
+    background: #1a252f;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+main {
+    grid-column: 1 / 2;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.section-title {
+    font-weight: bold;
+    margin: 10px 0;
+    border-bottom: 1px solid #7f8c8d;
+    padding-bottom: 5px;
+}
+
+.drop-zone {
+    flex-grow: 1;
+    min-height: 200px;
+    border: 2px dashed #7f8c8d;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-content: flex-start;
+}
+
+#play-area { background-color: rgba(46, 204, 113, 0.1); }
+#waiting-area { background-color: rgba(52, 152, 219, 0.1); }
+#trash-area { border-color: #e74c3c; width: 150px; text-align: center; }
+
+#discard-log {
+    grid-column: 2 / 3;
+    background: var(--panel-bg);
+    padding: 10px;
+    overflow-y: auto;
+}
+
+/* Card Styles & Flipping Mechanics */
+.card {
+    width: 150px;
+    height: 220px;
+    perspective: 1000px;
+    cursor: grab;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:active {
+    cursor: grabbing;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.card.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.card-front img, .card-back img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+    background: white;
+}
+
+/* Back side is showing first initially, so we rotate the front */
+.card-front { transform: rotateY(180deg); }
