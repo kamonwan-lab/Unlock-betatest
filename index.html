@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlock! Web Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="welcome-screen">
+        <h1>Unlock! Web Game</h1>
+        <p>Select an episode to begin:</p>
+        <div id="episode-list"></div>
+    </div>
+
+    <div id="game-screen" class="hidden">
+        <header>
+            <button onclick="goHome()">🏠 Home</button>
+            <div class="search-container">
+                <input type="text" id="card-search" placeholder="Search card No... (e.g. 08)">
+                <button onclick="searchCard()">Find</button>
+            </div>
+            <div id="trash-area" class="drop-zone">
+                🗑️ Trash (Drag Here)
+            </div>
+        </header>
+
+        <main>
+            <div class="section-title">Play Area</div>
+            <div id="play-area" class="drop-zone"></div>
+
+            <div class="section-title">Waiting Area (Deck)</div>
+            <div id="waiting-area" class="drop-zone"></div>
+        </main>
+        
+        <aside id="discard-log">
+            <h3>Discarded</h3>
+            <ul id="discard-list"></ul>
+        </aside>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
