@@ -146,3 +146,53 @@ header {
     transform: translateY(-10px); /* ดันการ์ดลอยขึ้นมานิดนึง */
     border: 2px solid #f1c40f;
 }
+
+/* 1. ปรับแก้ให้ Popup (Modal) ไม่ล้นขอบจอเด็ดขาด */
+.discard-content { 
+    width: 90%; /* ใช้เปอร์เซ็นต์แทน Fix pixel */
+    max-width: 400px; 
+    max-height: 80%; 
+}
+.deck-content { 
+    width: 90%; 
+    max-width: 800px; 
+    height: 80%; 
+}
+
+/* 2. ทำให้การ์ดที่เรียงกันในบอร์ด ถ้าพื้นที่แคบให้ปัดตกบรรทัดใหม่เสมอ */
+.drop-zone, .modal-grid {
+    display: flex;
+    flex-wrap: wrap; /* สำคัญมาก: ทำให้การ์ดไม่ดันกันจนทะลุขอบ */
+    justify-content: flex-start;
+}
+
+/* 3. ทำให้ภาพใน Focus Area หดเล็กลงตามกรอบเสมอ ไม่ทะลุออกไป */
+#focus-img { 
+    max-width: 100%; 
+    max-height: 100%; 
+    object-fit: contain; /* บังคับภาพให้อยู่ในสัดส่วน โดยไม่ล้นกรอบ */
+}
+
+/* 4. การแสดงผลบนหน้าจอเล็ก (Responsive สำหรับหน้าจอกว้างไม่เกิน 768px เช่น iPad, มือถือ) */
+@media (max-width: 768px) {
+    /* ปลดล็อกให้จอหลักเลื่อนขึ้นลงได้ */
+    #game-container {
+        flex-direction: column; /* เปลี่ยนจากเรียงซ้ายขวา เป็นเรียงบนลงล่าง */
+        overflow-y: auto; /* เปิดให้เลื่อนขึ้นลงได้ถ้าจอเล็กเกินไป */
+    }
+    
+    /* ให้แต่ละ Panel กางเต็ม 100% ของจอมือถือ */
+    #focus-panel, #play-panel, #right-panel {
+        width: 100%; 
+        box-sizing: border-box;
+    }
+
+    #focus-panel { min-height: 250px; } /* ให้พื้นที่โชว์รูปใหญ่พอสมควร */
+    #play-panel { min-height: 300px; flex: none; } /* พื้นที่วางการ์ด */
+    
+    /* ปรับปุ่มเมนูขวา (Deck/Discard) ให้เรียงแนวนอนแทนในมือถือ */
+    #right-panel {
+        flex-direction: row; 
+        min-height: 100px;
+    }
+}
