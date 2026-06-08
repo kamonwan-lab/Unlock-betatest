@@ -9,7 +9,8 @@ const gameDatabase = {
 
 let currentDraggedCard = null;
 let allCardsMap = {};
-let imageCache = {}; // Cache to avoid checking same image twice
+let discardedCardsMap = {}; // Track discarded cards
+let imageCache = {};
 
 window.onload = () => {
     const epList = document.getElementById('episode-list');
@@ -28,8 +29,7 @@ window.onload = () => {
 };
 
 /**
- * Check if an image exists at the given URL
- * Uses cache to avoid redundant requests
+ * Check if an image exists (with caching)
  */
 async function checkImageExists(url) {
     if (imageCache[url] !== undefined) {
@@ -51,19 +51,16 @@ async function checkImageExists(url) {
 }
 
 /**
- * Scan for cards with both .jpg and .png formats
- * Optimized to check formats sequentially per card to avoid network congestion
+ * Scan for cards with mixed formats
  */
 async function scanForCards(prefix) {
     const validCards = [];
     const possibleSuffixes = Array.from({length: 99}, (_, i) => String(i + 1).padStart(2, '0'));
     ['A','B','C','D','E','F'].forEach(l => possibleSuffixes.push(l));
 
-    // Process cards sequentially to avoid network congestion
     for (const suffix of possibleSuffixes) {
         const id = `${prefix}_${suffix}`;
         
-        // Check for front image (jpg first, then png)
         let frontExt = null;
         if (await checkImageExists(`images/${id}.jpg`)) {
             frontExt = 'jpg';
@@ -71,15 +68,13 @@ async function scanForCards(prefix) {
             frontExt = 'png';
         }
 
-        // If front exists, check for back image
         if (frontExt) {
-            let backExt = frontExt; // Default to same format
+            let backExt = frontExt;
             if (await checkImageExists(`images/${id}b.jpg`)) {
                 backExt = 'jpg';
             } else if (await checkImageExists(`images/${id}b.png`)) {
                 backExt = 'png';
             } else {
-                // If no back image found, use front as back
                 backExt = frontExt;
             }
 
@@ -105,10 +100,14 @@ async function loadEpisode(epId) {
 
     const deckArea = document.getElementById('deck-area');
     const playArea = document.getElementById('play-area');
+    const discardGrid = document.getElementById('discard-grid');
+    
     deckArea.innerHTML = '';
     playArea.innerHTML = '';
-    document.getElementById('discard-list').innerHTML = '';
+    discardGrid.innerHTML = '';
+    
     allCardsMap = {};
+    discardedCardsMap = {};
 
     foundCards.forEach(cardData => {
         const cardEl = createCardElement(cardData);
@@ -123,6 +122,7 @@ async function loadEpisode(epId) {
     });
 
     setupDragAndDrop();
+    updateStats();
 
     document.getElementById('loading-screen').classList.add('hidden');
     document.getElementById('game-screen').classList.remove('hidden');
@@ -134,17 +134,15 @@ function goHome() {
     document.getElementById('focus-img').style.display = 'none';
     document.getElementById('focus-placeholder').style.display = 'block';
     
-    // Clear modals
     closeModal('deck-modal');
     closeModal('discard-modal');
     
-    // Cleanup
     allCardsMap = {};
+    discardedCardsMap = {};
 }
 
 /**
- * Create a card element with front and back
- * Handles mixed image formats (.jpg, .png) and different image sizes
+ * Create card element with flip and drag support
  */
 function createCardElement(cardData) {
     const card = document.createElement('div');
@@ -152,6 +150,7 @@ function createCardElement(cardData) {
     card.id = `card-${cardData.id}`;
     card.draggable = true;
     card.dataset.realId = cardData.id;
+    card._cardData = cardData;
 
     const inner = document.createElement('div');
     inner.className = 'card-inner';
@@ -176,11 +175,12 @@ function createCardElement(cardData) {
     inner.appendChild(back);
     card.appendChild(inner);
 
-    // Click to select (in deck) or show in focus area
+    // Click handler
     card.onclick = (e) => {
         const inDeck = card.closest('#deck-area');
-        if (inDeck && !e.dblclick) {
+        if (inDeck) {
             card.classList.toggle('selected-card');
+            updateStats();
         }
         updateFocusArea(cardData.frontUrl, cardData.backUrl, card.classList.contains('flipped')); 
     };
@@ -217,7 +217,13 @@ function updateFocusArea(frontSrc, backSrc, isFlipped) {
 }
 
 function openModal(id) { 
-    document.getElementById(id).classList.remove('hidden'); 
+    document.getElementById(id).classList.remove('hidden');
+    if (id === 'deck-modal') {
+        updateDeckStats();
+    } else if (id === 'discard-modal') {
+        updateDiscardStats();
+        showEmptyDiscardMessage();
+    }
 }
 
 function closeModal(id) { 
@@ -269,42 +275,76 @@ function setupDropZone(zone) {
         zone.classList.remove('drag-over');
         if (currentDraggedCard) {
             zone.appendChild(currentDraggedCard);
+            currentDraggedCard.classList.remove('selected-card');
+            updateStats();
         }
     });
 }
 
+/**
+ * Discard a card - moves it to discard modal grid
+ */
 function discardCard(card) {
     const realId = card.dataset.realId;
-    card.style.display = 'none'; 
+    const cardData = card._cardData || { id: realId };
+    
+    // Hide card from main areas
+    card.style.display = 'none';
+    
+    // Add to discarded map
+    discardedCardsMap[realId] = {
+        card: card,
+        cardData: cardData
+    };
 
-    let displayName = realId.includes('_') ? realId.split('_')[1] : realId;
-
-    const list = document.getElementById('discard-list');
-    const li = document.createElement('li');
-    li.id = `discard-item-${realId}`;
+    // Recreate card in discard grid
+    const discardGrid = document.getElementById('discard-grid');
+    const discardCardEl = createCardElement(cardData);
+    discardCardEl.id = `discard-${realId}`;
+    discardCardEl.dataset.discardId = realId;
     
-    const span = document.createElement('span');
-    span.textContent = `Card ${displayName}`;
+    // Add restore button overlay
+    const restoreOverlay = document.createElement('div');
+    restoreOverlay.className = 'card-overlay restore-overlay';
+    restoreOverlay.innerHTML = '<button class="restore-btn-small" onclick="restoreCard(\'' + realId + '\')">↩️ Restore</button>';
+    discardCardEl.appendChild(restoreOverlay);
     
-    const restoreBtn = document.createElement('button');
-    restoreBtn.className = 'restore-btn';
-    restoreBtn.textContent = '↩️ Restore';
-    restoreBtn.onclick = () => restoreCard(realId);
+    discardGrid.appendChild(discardCardEl);
     
-    li.appendChild(span);
-    li.appendChild(restoreBtn);
-    list.appendChild(li);
+    updateStats();
+    updateDiscardStats();
+    showEmptyDiscardMessage();
 }
 
+/**
+ * Restore card from discard
+ */
 function restoreCard(realId) {
-    const card = allCardsMap[realId];
-    if (card) {
-        const discardItem = document.getElementById(`discard-item-${realId}`);
-        if (discardItem) discardItem.remove();
+    const discarded = discardedCardsMap[realId];
+    if (discarded) {
+        const originalCard = discarded.card;
+        const discardCardEl = document.getElementById(`discard-${realId}`);
         
-        card.style.display = 'block';
-        document.getElementById('play-area').appendChild(card);
+        if (discardCardEl) {
+            discardCardEl.remove();
+        }
+        
+        originalCard.style.display = 'block';
+        document.getElementById('play-area').appendChild(originalCard);
+        
+        delete discardedCardsMap[realId];
+        updateStats();
+        updateDiscardStats();
+        showEmptyDiscardMessage();
     }
+}
+
+/**
+ * Restore all cards at once
+ */
+function restoreAllCards() {
+    const cardIds = Object.keys(discardedCardsMap);
+    cardIds.forEach(realId => restoreCard(realId));
 }
 
 function searchCard() {
@@ -327,7 +367,6 @@ function searchCard() {
             restoreCard(foundCard.dataset.realId);
         }
         document.getElementById('play-area').appendChild(foundCard);
-        
         foundCard.click();
         
         foundCard.style.boxShadow = "0 0 20px 5px #2ecc71";
@@ -343,7 +382,7 @@ function sendSelectedToPlayArea() {
     const selectedCards = document.querySelectorAll('#deck-area .selected-card');
     
     if (selectedCards.length === 0) {
-        alert("กรุณาคลิกเลือกการ์ดอย่างน้อย 1 ใบก่อนครับ");
+        alert("Please select at least 1 card");
         return;
     }
 
@@ -352,10 +391,51 @@ function sendSelectedToPlayArea() {
         playArea.appendChild(card); 
     });
 
+    updateStats();
     closeModal('deck-modal');
 }
 
 function deselectAllDeckCards() {
     const selectedCards = document.querySelectorAll('#deck-area .selected-card');
     selectedCards.forEach(card => card.classList.remove('selected-card'));
+    updateDeckStats();
+}
+
+/**
+ * Update card counts in header
+ */
+function updateStats() {
+    const deckCount = document.querySelectorAll('#deck-area .card:not([style*="display: none"])').length;
+    const playCount = document.querySelectorAll('#play-area .card:not([style*="display: none"])').length;
+    const discardCount = Object.keys(discardedCardsMap).length;
+
+    document.getElementById('deck-count').textContent = deckCount;
+    document.getElementById('play-count').textContent = playCount;
+    document.getElementById('discard-count').textContent = discardCount;
+}
+
+function updateDeckStats() {
+    const total = document.querySelectorAll('#deck-area .card').length;
+    const selected = document.querySelectorAll('#deck-area .selected-card').length;
+    
+    document.getElementById('total-deck-count').textContent = total;
+    document.getElementById('selected-deck-count').textContent = selected;
+}
+
+function updateDiscardStats() {
+    const total = Object.keys(discardedCardsMap).length;
+    document.getElementById('total-discard-count').textContent = total;
+}
+
+function showEmptyDiscardMessage() {
+    const discardGrid = document.getElementById('discard-grid');
+    const emptyMsg = document.getElementById('empty-discard-message');
+    
+    if (Object.keys(discardedCardsMap).length === 0) {
+        emptyMsg.style.display = 'flex';
+        discardGrid.style.display = 'none';
+    } else {
+        emptyMsg.style.display = 'none';
+        discardGrid.style.display = 'grid';
+    }
 }
