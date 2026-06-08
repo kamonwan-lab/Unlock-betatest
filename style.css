@@ -257,6 +257,24 @@ main {
     font-size: 0.9rem;
     text-align: center;
 }
+/* กำหนดกรอบไม่ให้ภาพที่ซูมล้นออกนอกกรอบ */
+.hover-zoom-container {
+  overflow: hidden;
+  width: 100%;
+  max-width: 500px;
+}
+
+/* ตั้งค่าการขยายและการเคลื่อนไหว */
+.hover-zoom-container img {
+  width: 100%;
+  height: auto;
+  transition: transform 0.5s ease-in-out;
+}
+
+/* สั่งให้ภาพขยายเมื่อนำเมาส์ไปชี้ */
+.hover-zoom-container:hover img {
+  transform: scale(1.3); /* ปรับขนาดการซูมตามต้องการ */
+}
 
 /* ===== CENTER PANEL: PLAY AREA ===== */
 #play-panel {
