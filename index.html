@@ -33,20 +33,20 @@
 
         <main id="game-container">
             <section id="focus-panel">
-                <div class="panel-title">Reading Focus</div>
+                <div class="panel-title">Reading Focus (Click Card to View)</div>
                 <div id="focus-content">
-                    <img id="focus-img" src="" alt="คลิกที่การ์ดเพื่อดูภาพขยาย" style="display:none;">
+                    <img id="focus-img" src="" alt="Click a card to view" style="display:none;">
                     <p id="focus-placeholder">Select a card to view</p>
                 </div>
             </section>
 
             <section id="play-panel">
-                <div class="panel-title">Selected Cards Area</div>
+                <div class="panel-title">Selected Cards Area (Scrollable)</div>
                 <div id="play-area" class="drop-zone"></div>
             </section>
 
             <section id="right-panel">
-                <div id="discard-zone" class="drop-zone action-zone" onclick="openModal('discard-modal')">
+                <div id="discard-zone" class="action-zone" onclick="openModal('discard-modal')">
                     🗑️<br>Discard Zone<br><small>[ Drag Here or Click ]</small>
                 </div>
                 <div id="deck-zone" class="action-zone" onclick="openModal('deck-modal')">
@@ -56,6 +56,7 @@
         </main>
     </div>
 
+    <!-- Deck Modal: Shows all cards in deck, allows selection -->
     <div id="deck-modal" class="modal hidden">
         <div class="modal-content deck-content">
             <div class="modal-header">
@@ -64,13 +65,14 @@
             </div>
             
             <div class="deck-controls">
-                <button class="action-btn" onclick="sendSelectedToPlayArea()">➡️ ส่งการ์ดที่เลือกไป Play Area</button>
-                <button class="action-btn cancel-btn" onclick="deselectAllDeckCards()">❌ ยกเลิกการเลือกทั้งหมด</button>
+                <button class="action-btn" onclick="sendSelectedToPlayArea()">➡️ Send Selected to Play Area</button>
+                <button class="action-btn cancel-btn" onclick="deselectAllDeckCards()">❌ Deselect All</button>
             </div>
             <div id="deck-area" class="drop-zone modal-grid"></div>
         </div>
     </div>
 
+    <!-- Discard Modal: Shows discarded cards with restore option -->
     <div id="discard-modal" class="modal hidden">
         <div class="modal-content discard-content">
             <div class="modal-header">
