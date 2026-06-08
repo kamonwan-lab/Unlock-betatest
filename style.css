@@ -20,7 +20,7 @@ body {
     overflow: hidden; /* Prevent body scroll */
 }
 
-.hidden { display: none !important; }
+.hidden { display: none; }
 
 /* Welcome Screen */
 #welcome-screen {
@@ -43,12 +43,71 @@ body {
 }
 .ep-btn:hover { background-color: #34495e; }
 
-/* Main Game Layout (จัดเลย์เอาต์หน้าจอเล่นเกมหลัก) */
-#layout-container {
+/* Main Game Layout */
+#game-screen {
     display: flex;
-    height: calc(100vh - 20px); /* Fill screen minus padding */
-    padding: 10px;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+header {
+    background: var(--panel-bg);
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border-bottom: 2px solid #555;
+    flex-shrink: 0;
+}
+
+.header-left {
+    display: flex;
     gap: 10px;
+    align-items: center;
+}
+
+.header-title {
+    flex: 1;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--highlight-green);
+}
+
+.icon-btn, .search-container button {
+    background: #34495e;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.icon-btn:hover, .search-container button:hover {
+    background: #5a7c94;
+}
+
+.search-container {
+    display: flex;
+    gap: 5px;
+}
+
+.search-container input {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    width: 150px;
+}
+
+/* Main Game Container */
+main {
+    display: flex;
+    flex: 1;
+    gap: 10px;
+    padding: 10px;
+    overflow: hidden;
 }
 
 /* Panel Titles */
@@ -59,9 +118,10 @@ body {
     border-bottom: 2px solid #555;
     padding-bottom: 5px;
     margin-bottom: 10px;
+    font-size: 0.9rem;
 }
 
-/* LEFT PANEL (ส่วนซ้าย: Focus, Trash, Search) */
+/* LEFT PANEL - Focus Area */
 #focus-panel {
     width: 350px;
     background: var(--panel-bg);
@@ -69,105 +129,125 @@ body {
     padding: 15px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-}
-
-.panel-header {
-    display: flex;
     gap: 10px;
-}
-.icon-btn, .search-container button {
-    background: #34495e;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-.search-container input {
-    padding: 8px;
-    border: none;
-    border-radius: 4px;
+    flex-shrink: 0;
+    overflow: hidden;
 }
 
-/* --- THE CRITICAL FIX: แก้ปัญหาภาพล้นหน้าจอ --- */
-.panel-section {
-    flex: 1; /* Stretch vertically */
-    display: flex;
-    flex-direction: column;
-    min-height: 0; /* Important for inner flex containers */
-}
-
-/* Make Focus Viewer scrollable if needed */
-.focus-viewer {
-    background-color: black;
+#focus-content {
+    flex: 1;
+    background: black;
     border: 3px solid white;
     border-radius: 5px;
-    overflow-y: auto; /* เปิด Scroll แนวตั้งถ้าภาพสูงเกินขอบ */
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: auto;
     padding: 5px;
-    flex: 1; /* Stretch to fill panel space */
 }
 
-/* บังคับภาพไม่ให้สูงเกินกรอบ และปรับสัดส่วนอัตโนมัติ */
 #focus-img {
     max-width: 100%;
-    max-height: 100%; /* ภาพจะไม่สูงไปกว่า .focus-viewer */
-    object-fit: contain; /* ปรับภาพให้อยู่ในสัดส่วน โดยไม่ล้นกรอบ */
+    max-height: 100%;
+    object-fit: contain; /* Maintain aspect ratio, no distortion */
+    border-radius: 3px;
 }
 
-/* TRASH AREA (Dark red) */
-.trash-zone {
-    border: 3px dashed var(--accent-red);
-    background-color: rgba(143, 27, 26, 0.2);
-    border-radius: 5px;
-    height: 100px;
-    color: var(--accent-red);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
+#focus-placeholder {
+    color: #999;
+    font-size: 0.9rem;
 }
 
-/* RIGHT PANEL (Game Area Grid) */
-#game-area {
+/* CENTER PANEL - Play Area */
+#play-panel {
     flex: 1;
     background: var(--panel-bg);
     border-radius: 10px;
     padding: 15px;
     display: flex;
     flex-direction: column;
+    gap: 10px;
+    overflow: hidden;
 }
 
-.header-main-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-/* Grid for cards */
-#game-grid {
+#play-area {
     flex: 1;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    grid-gap: 10px;
-    overflow-y: auto; /* Scroll if many cards are played */
-    padding: 10px 0;
+    gap: 10px;
+    overflow-y: auto;
+    padding: 5px;
+    border: 2px dashed #555;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.02);
 }
 
-/* Dropzone styling for dragging into the grid */
+/* RIGHT PANEL - Actions */
+#right-panel {
+    width: 180px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.action-zone {
+    flex: 1;
+    background: var(--panel-bg);
+    border: 3px dashed #555;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-align: center;
+    padding: 10px;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+}
+
+.action-zone:hover {
+    border-color: var(--highlight-green);
+    background: rgba(46, 204, 113, 0.1);
+}
+
+#discard-zone {
+    background: rgba(143, 27, 26, 0.2);
+    border-color: var(--accent-red);
+    color: var(--accent-red);
+}
+
+#discard-zone:hover {
+    background: rgba(143, 27, 26, 0.4);
+}
+
+/* DROP ZONE */
 .drop-zone {
     border-color: #555;
     background-color: rgba(255, 255, 255, 0.05);
 }
 
-/* Card Styles */
+.drop-zone.drag-over {
+    border-color: var(--highlight-green);
+    background-color: rgba(46, 204, 113, 0.15);
+}
+
+/* CARD STYLES - Consistent sizing with flexible images */
 .card {
     width: 120px;
     height: 180px;
     cursor: grab;
     perspective: 1000px;
+    user-select: none;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card:active {
+    cursor: grabbing;
 }
 
 .card-inner {
@@ -176,6 +256,7 @@ body {
     height: 100%;
     transition: transform 0.6s;
     transform-style: preserve-3d;
+    will-change: transform;
 }
 
 .card.flipped .card-inner {
@@ -188,46 +269,249 @@ body {
     height: 100%;
     backface-visibility: hidden;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-    background: white; /* In case of transparent PNG */
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.card img {
+    max-width: 95%;
+    max-height: 95%;
+    object-fit: contain; /* Prevents distortion for any image size */
+    border-radius: 6px;
+}
+
+.card-front {
+    transform: rotateY(180deg);
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+}
+
+.card-back {
+    background: white;
+}
+
+.card.dragging {
+    opacity: 0.7;
+}
+
+.card.selected-card {
+    box-shadow: 0 0 15px 3px var(--highlight-green);
+}
+
+/* MODAL STYLES */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--panel-bg);
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid var(--highlight-green);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #555;
+    padding-bottom: 10px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--highlight-green);
+}
+
+.close-btn {
+    background: var(--accent-red);
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.card img {
-    max-width: 90%;
-    max-height: 90%;
-    object-fit: contain;
-    border-radius: 8px;
+.close-btn:hover {
+    background: #c02020;
 }
 
-/* Back side is rotated initialy */
-.card-front { transform: rotateY(180deg); }
+/* Deck Modal Grid */
+.deck-content {
+    min-width: 70vw;
+    min-height: 60vh;
+}
 
-/* --- Mobile Responsiveness ( stacked layout on small screens ) --- */
-@media (max-width: 768px) {
-    #layout-container {
-        flex-direction: column;
-        overflow-y: auto; /* Scroll the main container on mobile */
+.modal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+    overflow-y: auto;
+    flex: 1;
+    padding: 10px;
+}
+
+.deck-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.action-btn {
+    flex: 1;
+    padding: 10px;
+    background: #34495e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-weight: bold;
+}
+
+.action-btn:hover {
+    background: #5a7c94;
+}
+
+.action-btn.cancel-btn {
+    background: var(--accent-red);
+}
+
+.action-btn.cancel-btn:hover {
+    background: #c02020;
+}
+
+/* Discard Modal */
+.discard-content {
+    min-width: 400px;
+    min-height: 300px;
+}
+
+#discard-list {
+    flex: 1;
+    overflow-y: auto;
+    margin: 0;
+    padding: 10px;
+    list-style: none;
+}
+
+#discard-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: rgba(143, 27, 26, 0.2);
+    margin-bottom: 8px;
+    border-radius: 5px;
+    border-left: 4px solid var(--accent-red);
+}
+
+.restore-btn {
+    background: var(--highlight-green);
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.restore-btn:hover {
+    background: #28aa5f;
+}
+
+/* Loading Screen */
+#loading-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: var(--bg-color);
+}
+
+#loading-screen h2 {
+    color: var(--highlight-green);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 1024px) {
+    main {
+        flex-wrap: wrap;
+        padding: 5px;
+        gap: 5px;
     }
-    
+
     #focus-panel {
         width: 100%;
+        min-height: 200px;
+        flex-shrink: 0;
+    }
+
+    #play-panel {
+        flex: 1;
+        min-width: 300px;
+    }
+
+    #right-panel {
+        width: 150px;
+    }
+}
+
+@media (max-width: 768px) {
+    main {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    #focus-panel {
+        width: 100%;
+        height: 250px;
+        flex-shrink: 0;
+    }
+
+    #play-panel {
+        width: 100%;
         height: auto;
-        flex: none;
+        flex: 1;
     }
-    
-    .focus-viewer {
-        height: 250px; /* Limit height of focus area on mobile */
+
+    #right-panel {
+        width: 100%;
+        flex-direction: row;
+        height: 120px;
     }
-    
-    #game-area {
-        height: auto;
-        flex: none;
+
+    .action-zone {
+        flex: 1;
     }
-    
-    #game-grid {
-        height: 400px; /* Allow grid to scroll vertically */
+
+    .modal-content {
+        max-width: 95vw;
+        max-height: 80vh;
     }
 }
