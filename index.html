@@ -3,23 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unlock! Web Game</title>
+    <title>Unlock! Web Game - Prototype</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <!-- WELCOME SCREEN -->
     <div id="welcome-screen">
-        <h1>Unlock! Web Game</h1>
+        <h1>🎮 Unlock! Web Game</h1>
         <p>Select an episode to begin:</p>
         <div id="episode-list"></div>
     </div>
 
+    <!-- LOADING SCREEN -->
     <div id="loading-screen" class="hidden">
+        <div class="loading-spinner"></div>
         <h2>กำลังค้นหาการ์ดในโฟลเดอร์ images...</h2>
         <p>Please wait a moment...</p>
     </div>
 
+    <!-- MAIN GAME SCREEN -->
     <div id="game-screen" class="hidden">
+        <!-- HEADER -->
         <header>
             <div class="header-left">
                 <button class="icon-btn" onclick="goHome()">🏠 Home</button>
@@ -28,58 +33,98 @@
                     <button onclick="searchCard()">🔍</button>
                 </div>
             </div>
-            <div class="header-title">Unlock! Board</div>
+            <div class="header-title">📋 Unlock! Board</div>
+            <div class="header-right">
+                <span class="stat-badge">Deck: <span id="deck-count">0</span></span>
+                <span class="stat-badge">Play: <span id="play-count">0</span></span>
+                <span class="stat-badge discard-stat">Discard: <span id="discard-count">0</span></span>
+            </div>
         </header>
 
+        <!-- MAIN CONTENT -->
         <main id="game-container">
+            <!-- LEFT PANEL: Focus Area -->
             <section id="focus-panel">
-                <div class="panel-title">Reading Focus (Click Card to View)</div>
+                <div class="panel-title">📖 Reading Focus</div>
                 <div id="focus-content">
                     <img id="focus-img" src="" alt="Click a card to view" style="display:none;">
-                    <p id="focus-placeholder">Select a card to view</p>
+                    <p id="focus-placeholder">👆 Click a card to view details</p>
                 </div>
             </section>
 
+            <!-- CENTER PANEL: Play Area -->
             <section id="play-panel">
-                <div class="panel-title">Selected Cards Area (Scrollable)</div>
+                <div class="panel-title">🎯 Selected Cards Area</div>
                 <div id="play-area" class="drop-zone"></div>
             </section>
 
+            <!-- RIGHT PANEL: Action Zones -->
             <section id="right-panel">
-                <div id="discard-zone" class="action-zone" onclick="openModal('discard-modal')">
-                    🗑️<br>Discard Zone<br><small>[ Drag Here or Click ]</small>
+                <!-- Discard Zone -->
+                <div id="discard-zone" class="action-zone discard-action" onclick="openModal('discard-modal')">
+                    <div class="zone-icon">🗑️</div>
+                    <div class="zone-title">Discard Zone</div>
+                    <small>Drag Here or Click</small>
                 </div>
-                <div id="deck-zone" class="action-zone" onclick="openModal('deck-modal')">
-                    🎴<br>Deck Stack<br><small>[ Click to Open ]</small>
+
+                <!-- Deck Zone -->
+                <div id="deck-zone" class="action-zone deck-action" onclick="openModal('deck-modal')">
+                    <div class="zone-icon">🎴</div>
+                    <div class="zone-title">Deck Stack</div>
+                    <small>Click to Open</small>
                 </div>
             </section>
         </main>
     </div>
 
-    <!-- Deck Modal: Shows all cards in deck, allows selection -->
+    <!-- ========== MODALS ========== -->
+
+    <!-- DECK MODAL: Interactive card selection -->
     <div id="deck-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="closeModal('deck-modal')"></div>
         <div class="modal-content deck-content">
             <div class="modal-header">
-                <h2>Waiting Cards in Deck</h2>
+                <h2>🎴 Waiting Cards in Deck</h2>
                 <button class="close-btn" onclick="closeModal('deck-modal')">✖</button>
             </div>
             
             <div class="deck-controls">
-                <button class="action-btn" onclick="sendSelectedToPlayArea()">➡️ Send Selected to Play Area</button>
-                <button class="action-btn cancel-btn" onclick="deselectAllDeckCards()">❌ Deselect All</button>
+                <button class="action-btn primary" onclick="sendSelectedToPlayArea()">
+                    ➡️ Send Selected to Play Area
+                </button>
+                <button class="action-btn secondary" onclick="deselectAllDeckCards()">
+                    ❌ Deselect All
+                </button>
             </div>
+
+            <div class="deck-stats">
+                <span>Total in Deck: <strong id="total-deck-count">0</strong></span>
+                <span>Selected: <strong id="selected-deck-count">0</strong></span>
+            </div>
+
             <div id="deck-area" class="drop-zone modal-grid"></div>
         </div>
     </div>
 
-    <!-- Discard Modal: Shows discarded cards with restore option -->
+    <!-- DISCARD MODAL: Interactive card grid with restore -->
     <div id="discard-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="closeModal('discard-modal')"></div>
         <div class="modal-content discard-content">
             <div class="modal-header">
-                <h2>Discarded Cards</h2>
+                <h2>🗑️ Discarded Cards</h2>
                 <button class="close-btn" onclick="closeModal('discard-modal')">✖</button>
             </div>
-            <ul id="discard-list"></ul>
+
+            <div class="discard-stats">
+                <span>Total Discarded: <strong id="total-discard-count">0</strong></span>
+                <button class="action-btn secondary" onclick="restoreAllCards()">↩️ Restore All</button>
+            </div>
+
+            <div id="discard-grid" class="drop-zone modal-grid discard-grid"></div>
+            
+            <div id="empty-discard-message" class="empty-message">
+                📭 No discarded cards yet
+            </div>
         </div>
     </div>
 
